@@ -15,6 +15,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use('/uploads/products', express.static(path.join(__dirname, 'uploads/products')));
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Daftarkan Rute ke Express
