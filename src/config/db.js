@@ -55,7 +55,20 @@ const initDB = async () => {
     `);
     console.log("Table wishlist ready");
 
-    
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS assets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nama VARCHAR(100) NOT NULL,
+        lokasi VARCHAR(100) NOT NULL,
+        status ENUM('Tersedia','Tidak Tersedia') NOT NULL,
+        gambar_url VARCHAR(255),
+        deskripsi TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Table aset ready");
+
   } catch (err) {
     console.error("DB init error:", err.message);
   }
