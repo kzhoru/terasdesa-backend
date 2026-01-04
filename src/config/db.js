@@ -8,7 +8,6 @@ const db = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
-
 const initDB = async () => {
   try {
     await db.query(`
@@ -19,10 +18,11 @@ const initDB = async () => {
         password TEXT NOT NULL,
         tanggal_lahir DATE NOT NULL,
         no_hp VARCHAR(15) NOT NULL,
-        photo VARCHAR(255) DEFAULT NULL,
+        photo VARCHAR(255),
         role ENUM('admin','user') DEFAULT 'user',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+          ON UPDATE CURRENT_TIMESTAMP
       )
     `);
     console.log("Table users ready");
@@ -33,12 +33,14 @@ const initDB = async () => {
         user_id INT NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-        price DECIMAL(10, 2) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
         stock INT DEFAULT 0,
         image_url VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
+          ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE
       )
     `);
     console.log("Table products ready");
@@ -49,13 +51,16 @@ const initDB = async () => {
         user_id INT NOT NULL,
         product_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id)
+          ON DELETE CASCADE
       )
     `);
     console.log("Table wishlist ready");
 
     await db.query(`
+
       CREATE TABLE IF NOT EXISTS assets (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nama VARCHAR(100) NOT NULL,
@@ -69,11 +74,65 @@ const initDB = async () => {
     `);
     console.log("Table aset ready");
 
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS carts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE
+      )
+    `);
+    console.log("Table carts ready");
+
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS cart_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cart_id INT NOT NULL,
+        product_id INT NOT NULL,
+        quantity INT NOT NULL DEFAULT 1,
+        note TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (cart_id) REFERENCES carts(id)
+          ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id)
+      )
+    `);
+    console.log("Table cart_items ready");
+
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS transaksi (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        total DECIMAL(12,2) NOT NULL,
+        status ENUM('pending','paid','cancelled')
+          DEFAULT 'paid',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE
+      )
+    `);
+    console.log("Table transaksi ready");
+
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS transaksi_items (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        transaksi_id INT NOT NULL,
+        product_id INT NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        quantity INT NOT NULL,
+        note TEXT,
+        FOREIGN KEY (transaksi_id) REFERENCES transaksi(id)
+          ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id)
+      )
+    `);
+    console.log("Table transaksi_items ready");
+
   } catch (err) {
     console.error("DB init error:", err.message);
   }
 };
 
 initDB();
-
 module.exports = db;
