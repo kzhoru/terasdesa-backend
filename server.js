@@ -9,7 +9,13 @@ const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const wishlistRoutes = require("./src/routes/wishlistRoutes");
+
 const assetRoutes = require("./src/routes/assetRoutes");
+
+const cartRoutes = require("./src/routes/cartRoutes");
+const checkoutRoutes = require("./src/routes/checkoutRoutes");
+const transaksiRoutes = require("./src/routes/transaksiRoutes");
+
 
 const app = express();
 
@@ -28,7 +34,11 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+
 app.use("/api/assets", assetRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/checkout", checkoutRoutes);
+app.use("/api/transaksi", transaksiRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
