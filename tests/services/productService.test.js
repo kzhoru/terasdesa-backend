@@ -1,9 +1,8 @@
-
-const db = require('../config/db'); 
-const productService = require('../services/productService');
+const db = require('../../src/config/db'); 
+const productService = require('../../src/services/productService');
 
 // Memalsukan (mock) database agar tidak mengubah data asli MySQL saat testing
-jest.mock('../config/db');
+jest.mock('../../src/config/db');
 
 describe('White Box Testing - productService.js', () => {
     
