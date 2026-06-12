@@ -30,7 +30,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads/assets", express.static(path.join(__dirname, "uploads/assets")));
 
 // Daftarkan Rute ke Express
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
@@ -45,5 +45,8 @@ app.listen(PORT, () => {
     console.log(`==========================================`);
     console.log(`Server Express berjalan di port: ${PORT}`);
     console.log(`Database terhubung dan siap digunakan.`);
+    app.listen(5000, '0.0.0.0', () => {
+        console.log("SERVER BERHASIL NYALA DI PORT: 5000");
+            });
     console.log(`==========================================`);
 });
