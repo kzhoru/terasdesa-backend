@@ -73,4 +73,31 @@ const login = async (data) => {
   };
 };
 
-module.exports = { register, login };
+const forgotPassword = async (data) => {
+  const { email, newPassword } = data;
+
+  if (!email || !newPassword) {
+    throw new Error("Email dan password baru wajib diisi");
+  }
+
+  if (newPassword.length < 6) {
+    throw new Error("Password minimal 6 karakter");
+  }
+
+  const user = await userRepo.findByEmail(email);
+
+  if (!user) {
+    throw new Error("Email tidak ditemukan");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  await userRepo.updatePassword(email, hashedPassword);
+
+  return {
+    message: "Password berhasil diubah",
+  };
+};
+
+
+module.exports = { register, login, forgotPassword };

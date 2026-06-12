@@ -32,4 +32,21 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+
+const forgotPassword = async (req, res) => {
+  try {
+    const result = await authService.forgotPassword(req.body);
+
+    res.status(200).json({
+      success: true,
+      message: result.message,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+module.exports = { register, login, forgotPassword };

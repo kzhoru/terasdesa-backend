@@ -48,4 +48,13 @@ const updatePhoto = async (id, photo) => {
   return result;
 };
 
-module.exports = { findByEmail, create,findById, updateProfile, updatePhoto };
+const updatePassword = async (email, password) => {
+  const [result] = await db.query(
+    "UPDATE users SET password = ? WHERE email = ?",
+    [password, email]
+  );
+
+  return result;
+};
+
+module.exports = { findByEmail, create,findById, updateProfile, updatePhoto, updatePassword };
