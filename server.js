@@ -15,6 +15,7 @@ const assetRoutes = require("./src/routes/assetRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
 const checkoutRoutes = require("./src/routes/checkoutRoutes");
 const transaksiRoutes = require("./src/routes/transaksiRoutes");
+const pembangunanRoutes = require("./src/routes/pembangunanRoutes");
 
 
 const app = express();
@@ -30,8 +31,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads/assets", express.static(path.join(__dirname, "uploads/assets")));
 
 // Daftarkan Rute ke Express
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 
@@ -39,6 +40,7 @@ app.use("/api/assets", assetRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/transaksi", transaksiRoutes);
+app.use("/api/pembangunan", pembangunanRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -129,6 +129,24 @@ const initDB = async () => {
     `);
     console.log("Table transaksi_items ready");
 
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS pembangunan (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nama_proyek VARCHAR(255) NOT NULL,
+        anggaran DECIMAL(15,2) NOT NULL,
+        sumber_dana VARCHAR(100) NOT NULL,
+        tanggal_mulai DATE NOT NULL,
+        target_selesai DATE NOT NULL,
+        progres INT NOT NULL DEFAULT 0,
+        status ENUM('Direncanakan', 'Berjalan', 'Selesai', 'Ditangguhkan') DEFAULT 'Direncanakan',
+        deskripsi TEXT,
+        image_url VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Table pembangunan ready");
+
   } catch (err) {
     console.error("DB init error:", err.message);
   }
