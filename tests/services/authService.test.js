@@ -128,4 +128,98 @@ describe("Auth Service Unit Tests", () => {
       await expect(authService.login(loginData)).rejects.toThrow("Password salah");
     });
   });
+
+  describe("Forgot Password", () => {
+    const forgotPasswordData = {
+      email: "budi@example.com",
+      newPassword: "passwordBaru123",
+    };
+
+    const mockUser = {
+      id: 1,
+      name: "Budi Santoso",
+      email: "budi@example.com",
+      password: "hashedOldPassword",
+      role: "user",
+    };
+
+    it("harus berhasil mengubah password", async () => {
+      userRepo.findByEmail.mockResolvedValue(mockUser);
+
+      bcrypt.hash.mockResolvedValue("hashedNewPassword");
+
+      userRepo.updatePassword.mockResolvedValue({
+        affectedRows: 1,
+      });
+
+      const result = await authService.forgotPassword(
+        forgotPasswordData
+      );
+
+      expect(userRepo.findByEmail)
+        .toHaveBeenCalledWith(forgotPasswordData.email);
+
+      expect(bcrypt.hash)
+        .toHaveBeenCalledWith(
+          forgotPasswordData.newPassword,
+          10
+        );
+
+      expect(userRepo.updatePassword)
+        .toHaveBeenCalledWith(
+          forgotPasswordData.email,
+          "hashedNewPassword"
+        );
+
+      expect(result).toEqual({
+        message: "Password berhasil diubah",
+      });
+    });
+
+    it("harus throw error jika email kosong", async () => {
+      await expect(
+        authService.forgotPassword({
+          email: "",
+          newPassword: "passwordBaru123",
+        })
+      ).rejects.toThrow(
+        "Email dan password baru wajib diisi"
+      );
+    });
+
+    it("harus throw error jika password kosong", async () => {
+      await expect(
+        authService.forgotPassword({
+          email: "budi@example.com",
+          newPassword: "",
+        })
+      ).rejects.toThrow(
+        "Email dan password baru wajib diisi"
+      );
+    });
+
+    it("harus throw error jika password kurang dari 6 karakter", async () => {
+      await expect(
+        authService.forgotPassword({
+          email: "budi@example.com",
+          newPassword: "123",
+        })
+      ).rejects.toThrow(
+        "Password minimal 6 karakter"
+      );
+    });
+
+    it("harus throw error jika email tidak ditemukan", async () => {
+      userRepo.findByEmail.mockResolvedValue(null);
+
+      await expect(
+        authService.forgotPassword({
+          email: "tidakada@example.com",
+          newPassword: "passwordBaru123",
+        })
+      ).rejects.toThrow(
+        "Email tidak ditemukan"
+      );
+    });
+  });
 });
