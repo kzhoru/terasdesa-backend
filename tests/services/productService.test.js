@@ -18,7 +18,6 @@ describe('White Box Testing - productService.js', () => {
         // Kembalikan fungsi console.error ke kondisi normal setelah test selesai
         consoleSpy.mockRestore();
     });
-    // ---------------------------------------------------------
 
     // Bersihkan semua mock setiap kali satu pengujian selesai
     afterEach(() => {
